@@ -4,6 +4,8 @@ members = [
     "frontend",
     "backend",
 ]
+# published on its own, with its own MSRV
+exclude = ["canvas-codegen"]
 
 [workspace.metadata.dylint]
 libraries = [{ git = "https://github.com/leptos-rs/leptos-lints", tag = "v0.1.0" }]

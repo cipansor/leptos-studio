@@ -1,7 +1,7 @@
 use crate::builder::component_library::create_canvas_component;
 use crate::builder::keyboard::KeyboardAction;
 use crate::domain::CanvasComponent;
-use crate::services::export_service::{CodeGenerator, LeptosCodeGenerator};
+use crate::services::{CodeGenerator, LeptosGenerator};
 use crate::state::ExportPreset;
 use crate::state::app_state::{AppState, Notification};
 use crate::utils::{copy_to_clipboard, read_from_clipboard};
@@ -242,7 +242,7 @@ pub fn use_keyboard_actions(
             KeyboardAction::Export => {
                 let comps = app_state.canvas.components.get();
                 let variables = app_state.variables.get();
-                let generator = LeptosCodeGenerator::new(ExportPreset::Plain);
+                let generator = LeptosGenerator::new(ExportPreset::Plain);
 
                 match generator.generate(&comps, &variables) {
                     Ok(code) => {

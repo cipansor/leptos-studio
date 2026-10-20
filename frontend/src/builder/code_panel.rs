@@ -1,9 +1,7 @@
-use crate::services::export_advanced::{
+use crate::services::{CodeGenerator, HtmlGenerator, LeptosGenerator, MarkdownGenerator};
+use crate::services::{
     CssGenerator, JsonSchemaGenerator, ReactGenerator, SvelteGenerator, TailwindHtmlGenerator,
     TypeScriptGenerator, VueGenerator,
-};
-use crate::services::export_service::{
-    CodeGenerator, HtmlCodeGenerator, LeptosCodeGenerator, MarkdownCodeGenerator,
 };
 use crate::state::app_state::{AppState, Notification};
 use crate::utils::copy_to_clipboard;
@@ -24,19 +22,19 @@ pub fn CodePanel() -> impl IntoView {
 
         match selected_format.as_str() {
             "leptos" => {
-                let generator = LeptosCodeGenerator::new(crate::state::ExportPreset::Plain);
+                let generator = LeptosGenerator::new(crate::state::ExportPreset::Plain);
                 generator
                     .generate(&comps, &variables)
                     .unwrap_or_else(|e| e.user_message())
             }
             "html" => {
-                let generator = HtmlCodeGenerator;
+                let generator = HtmlGenerator;
                 generator
                     .generate(&comps, &variables)
                     .unwrap_or_else(|e| e.user_message())
             }
             "markdown" => {
-                let generator = MarkdownCodeGenerator;
+                let generator = MarkdownGenerator;
                 generator
                     .generate(&comps, &variables)
                     .unwrap_or_else(|e| e.user_message())

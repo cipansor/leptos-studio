@@ -1,0 +1,22 @@
+[package]
+name = "canvas-codegen"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89.0"
+description = "Turn a canvas component tree into source code for Leptos, React, Vue, Svelte, HTML, CSS and more"
+license = "Apache-2.0"
+repository = "https://github.com/cipansor/leptos-studio"
+keywords = ["codegen", "leptos", "react", "vue", "svelte"]
+categories = ["development-tools", "web-programming"]
+readme = "README.md"
+
+# Its own workspace: the crate is publishable on its own, and the app depends on
+# it by path, so it must not inherit the app's wasm-oriented release profile.
+[workspace]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+regex = "1.12"
+thiserror = "2.0"
+uuid = { version = "1.23", features = ["v4", "serde"] }

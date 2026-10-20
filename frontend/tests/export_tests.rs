@@ -1,12 +1,12 @@
 use leptos_studio::domain::{
     ButtonComponent, CanvasComponent, ContainerComponent, FlexDirection, LayoutType,
 };
-use leptos_studio::services::export_service::{CodeGenerator, LeptosCodeGenerator};
+use leptos_studio::services::{CodeGenerator, LeptosGenerator};
 use leptos_studio::state::ExportPreset;
 
 #[test]
 fn test_leptos_generator_structure() {
-    let generator = LeptosCodeGenerator::new(ExportPreset::Plain);
+    let generator = LeptosGenerator::new(ExportPreset::Plain);
 
     // Create nested structure: Container -> Button
     let mut container = ContainerComponent::new();
@@ -45,7 +45,7 @@ use leptos_studio::domain::{
     BadgeComponent, CheckboxComponent, DividerComponent, ImageComponent, InputComponent,
     ProgressComponent, RadioGroupComponent, SelectComponent, SwitchComponent, TextComponent,
 };
-use leptos_studio::services::export_service::{HtmlCodeGenerator, MarkdownCodeGenerator};
+use leptos_studio::services::{HtmlGenerator, MarkdownGenerator};
 
 fn all_components() -> Vec<CanvasComponent> {
     let mut container = ContainerComponent::new();
@@ -79,11 +79,11 @@ fn test_all_components_entire_codegen() {
     let components = all_components();
     assert_eq!(components.len(), 12);
 
-    let leptos = LeptosCodeGenerator::new(leptos_studio::state::ExportPreset::Plain)
+    let leptos = LeptosGenerator::new(leptos_studio::state::ExportPreset::Plain)
         .generate(&components, &[])
         .unwrap();
-    let html = HtmlCodeGenerator.generate(&components, &[]).unwrap();
-    let markdown = MarkdownCodeGenerator.generate(&components, &[]).unwrap();
+    let html = HtmlGenerator.generate(&components, &[]).unwrap();
+    let markdown = MarkdownGenerator.generate(&components, &[]).unwrap();
 
     // Every generator must successfully cover the full component set
     for opt in ["Option 1", "Option 2"] {

@@ -32,6 +32,7 @@ regex = "1.12"
 chrono = { version = "0.4.44", features = ["serde"] }
 futures = "0.3.32"
 async-trait = "0.1.89"
+canvas-codegen = { path = "../canvas-codegen" }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.71"
