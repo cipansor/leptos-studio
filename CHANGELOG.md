@@ -156,12 +156,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `canvas-codegen/src/domain/error.rs` (which shipped in the published crate).
   Account mentions in `CODEOWNERS` and `dependabot.yml` are unaffected — those
   name a user, not a URL.
-- `frontend/SECURITY.md` now documents both storage locations instead of only
-  LocalStorage: projects saved through `POST /api/projects` also persist to
-  `projects.json` on the server, so clearing browser storage is not the whole
-  story. Added the development defaults worth reviewing before deployment
-  (`0.0.0.0:3000`, `CORS_ORIGIN` defaulting to `Any`, unauthenticated project
-  endpoints).
+- `frontend/SECURITY.md` now describes where project data actually lives instead
+  of claiming it is kept in LocalStorage. Saved projects go to the backend
+  (`POST /api/projects` → `projects.json`); LocalStorage holds settings, sidebar
+  widths, Git-panel snapshots (`leptos_studio_git_repo`) and the legacy canvas key
+  that is read once for migration and then deleted. Custom library components and
+  the unused `leptos_studio_project` key persist nothing. Added the development
+  defaults worth reviewing before deployment (`0.0.0.0:3000`, `CORS_ORIGIN`
+  defaulting to `Any`, unauthenticated project endpoints).
 - Corrected the click-to-place claim (`frontend/QUICKSTART.md`) to the actual keyboard activation,
   and stated explicitly that **Save to Library** entries are session-only — a saved project carries
   the canvas layout but not the library — across `README.md`, `frontend/README.md`,
