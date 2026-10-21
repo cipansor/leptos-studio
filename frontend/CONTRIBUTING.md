@@ -22,7 +22,7 @@ This project follows a Code of Conduct that all contributors are expected to adh
 
 1. Fork the repository
 2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/leptos-studio.git`
-3. Add upstream remote: `git remote add upstream https://github.com/analisaperlengkapan/leptos-studio.git`
+3. Add upstream remote: `git remote add upstream https://github.com/cipansor/leptos-studio.git`
 4. Create a new branch: `git checkout -b feature/your-feature-name`
 
 ## Development Setup

@@ -28,7 +28,7 @@ Ensure you have:
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/analisaperlengkapan/leptos-studio.git
+git clone https://github.com/cipansor/leptos-studio.git
 cd leptos-studio
 ```
 

@@ -74,7 +74,7 @@ impl ErrorCode {
     /// Get documentation URL for this error
     pub fn docs_url(&self) -> String {
         format!(
-            "https://github.com/analisaperlengkapan/leptos-studio/wiki/Errors#{}",
+            "https://github.com/cipansor/leptos-studio/wiki/Errors#{}",
             self.as_str().to_lowercase()
         )
     }
