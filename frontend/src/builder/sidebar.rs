@@ -9,7 +9,7 @@ use crate::builder::project::ProjectPanel;
 use crate::builder::variable_panel::VariablePanel;
 use crate::domain::error::ValidationError;
 use crate::domain::validation::{ComponentNameValidator, HtmlTemplateValidator, Validator};
-use crate::services::export_service::{CodeGenerator, LeptosCodeGenerator};
+use crate::services::{CodeGenerator, LeptosGenerator};
 use crate::state::app_state::{AppState, ExportPreset, Notification};
 
 /// Convert ValidationError to user-friendly Indonesian message
@@ -181,7 +181,7 @@ pub fn Sidebar() -> impl IntoView {
         let components = app_state.canvas.components.get();
         let preset = app_state.settings.with(|s| s.export_preset.clone());
         let variables = app_state.variables.get();
-        let generator = LeptosCodeGenerator::new(preset);
+        let generator = LeptosGenerator::new(preset);
 
         match generator.generate(&components, &variables) {
             Ok(code) => {

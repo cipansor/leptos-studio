@@ -1,11 +1,4 @@
-pub mod component;
-pub mod error;
-pub mod style;
-pub mod validation;
-pub mod variable;
+//! The canvas data model, owned by `canvas-codegen`.
 
-pub use component::*;
-pub use error::*;
-pub use style::*;
-pub use validation::*;
-pub use variable::*;
+pub use canvas_codegen::domain::*;
+pub use canvas_codegen::domain::{component, error, style, validation, variable};

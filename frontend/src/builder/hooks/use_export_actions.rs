@@ -1,9 +1,7 @@
-use crate::services::export_advanced::{
+use crate::services::{CodeGenerator, HtmlGenerator, LeptosGenerator, MarkdownGenerator};
+use crate::services::{
     JsonSchemaGenerator, ReactGenerator, SvelteGenerator, TailwindHtmlGenerator,
     TypeScriptGenerator,
-};
-use crate::services::export_service::{
-    CodeGenerator, HtmlCodeGenerator, LeptosCodeGenerator, MarkdownCodeGenerator,
 };
 use crate::state::app_state::AppState;
 use leptos::prelude::*;
@@ -21,19 +19,19 @@ pub fn use_export_actions(
 
         let code = match export_template.get().as_str() {
             "leptos" => {
-                let generator = LeptosCodeGenerator::new(crate::state::ExportPreset::Plain);
+                let generator = LeptosGenerator::new(crate::state::ExportPreset::Plain);
                 generator
                     .generate(&comps, &variables)
                     .unwrap_or_else(|e| e.user_message())
             }
             "html" => {
-                let generator = HtmlCodeGenerator;
+                let generator = HtmlGenerator;
                 generator
                     .generate(&comps, &variables)
                     .unwrap_or_else(|e| e.user_message())
             }
             "markdown" => {
-                let generator = MarkdownCodeGenerator;
+                let generator = MarkdownGenerator;
                 generator
                     .generate(&comps, &variables)
                     .unwrap_or_else(|e| e.user_message())

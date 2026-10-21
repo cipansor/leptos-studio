@@ -640,15 +640,7 @@ impl Default for UiState {
     }
 }
 
-/// Export preset options
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
-pub enum ExportPreset {
-    #[default]
-    Plain,
-    ThawUi,
-    LeptosMaterial,
-    LeptosUse,
-}
+pub use canvas_codegen::preset::ExportPreset;
 
 /// Settings state
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
