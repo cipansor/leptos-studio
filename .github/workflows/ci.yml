@@ -83,7 +83,11 @@ jobs:
         run: cargo fmt --all --check
 
       - name: Clippy
-        run: cargo clippy --all-targets -- -D warnings
+        # Same flags as the root `check` job. `clippy::uninlined_format_args` is
+        # allow-by-default today, so this suppression is inert; it is here so the
+        # two jobs cannot disagree if a toolchain starts warning on it, which
+        # would fail this job and block the WASM build for an unrelated reason.
+        run: cargo clippy --all-targets -- -D warnings -A clippy::uninlined_format_args
 
       - name: Run tests
         run: cargo test

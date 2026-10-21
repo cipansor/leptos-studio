@@ -16,10 +16,10 @@ impl CodeGenerator for TailwindHtmlGenerator {
         components: &[CanvasComponent],
         _variables: &[Variable],
     ) -> AppResult<String> {
-        let mut output = String::new();
-
+        // The attribution goes after the doctype rather than before it: a comment
+        // ahead of `<!DOCTYPE html>` puts some browsers into quirks mode.
+        let mut output = String::from("<!DOCTYPE html>\n");
         output.push_str(&attribution(config, "<!-- ", " with Tailwind CSS -->"));
-        output.push_str("<!DOCTYPE html>\n");
         output.push_str("<html lang=\"en\">\n");
         output.push_str("<head>\n");
         output.push_str("  <meta charset=\"UTF-8\">\n");

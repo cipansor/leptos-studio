@@ -196,9 +196,22 @@ progress { accent-color: #007bff; }
 /// `prefix` and `suffix` are the target language's comment delimiters, so each
 /// generator keeps its own syntax while sharing one switch. Empty string when no
 /// attribution was configured, which is the default.
+///
+/// When the delimiters are an HTML comment, any `--` in the text is broken up
+/// first. An HTML comment ends at the first `--`, so an attribution containing
+/// `-->` would close the comment early and turn the rest of the text into live
+/// markup. Callers pass whatever text they like, so the escaping has to happen
+/// here rather than being left to each generator.
 pub(crate) fn attribution(config: &GeneratorConfig, prefix: &str, suffix: &str) -> String {
     match &config.attribution {
-        Some(text) => format!("{prefix}{text}{suffix}\n"),
+        Some(text) => {
+            let body = if prefix.contains("<!--") {
+                text.replace("--", "- -")
+            } else {
+                text.clone()
+            };
+            format!("{prefix}{body}{suffix}\n")
+        }
         None => String::new(),
     }
 }
