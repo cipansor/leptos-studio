@@ -175,50 +175,91 @@ fn default_output_names_no_product_for_every_target() {
 }
 
 #[test]
-fn attribution_cannot_break_out_of_an_html_comment() {
-    // An HTML comment ends at the first `--`, so `-->` in the text would close it
-    // early and promote the rest to live markup. The helper must neutralise that
-    // for every generator that writes an HTML comment.
+fn attribution_cannot_break_out_of_its_comment() {
+    // A comment ends at its terminator, so an attribution containing that
+    // terminator would close the comment early and promote the rest to live markup
+    // (or live CSS). The helper must neutralise that for every comment target.
     let components = [button()];
-    let hostile = "See --> <script>alert(1)</script>";
+    let hostile = "See --> */ <script>alert(1)</script>";
     let config = GeneratorConfig::with_attribution(hostile);
 
-    let html_targets: Vec<(&str, Box<dyn CodeGenerator>)> = vec![
-        ("html", Box::new(HtmlGenerator)),
-        ("markdown", Box::new(MarkdownGenerator)),
-        ("tailwind", Box::new(TailwindHtmlGenerator)),
+    struct CommentCase {
+        name: &'static str,
+        generator: Box<dyn CodeGenerator>,
+        open: &'static str,
+        close: &'static str,
+        defused: &'static str,
+    }
+
+    let cases = vec![
+        CommentCase {
+            name: "html",
+            generator: Box::new(HtmlGenerator),
+            open: "<!--",
+            close: "-->",
+            defused: "See - ->",
+        },
+        CommentCase {
+            name: "markdown",
+            generator: Box::new(MarkdownGenerator),
+            open: "<!--",
+            close: "-->",
+            defused: "See - ->",
+        },
+        CommentCase {
+            name: "tailwind",
+            generator: Box::new(TailwindHtmlGenerator),
+            open: "<!--",
+            close: "-->",
+            defused: "See - ->",
+        },
+        CommentCase {
+            name: "css",
+            generator: Box::new(CssGenerator),
+            open: "/*",
+            close: "*/",
+            defused: "See --> * /",
+        },
     ];
 
-    for (name, generator) in html_targets {
+    for CommentCase {
+        name,
+        generator,
+        open,
+        close,
+        defused,
+    } in cases
+    {
         let output = generator.generate_with(&config, &components, &[]).unwrap();
 
-        // The comment must be well formed: the text between `<!--` and the first
-        // `-->` may not itself contain `--`, or the browser ends the comment early.
-        let open = output
-            .find("<!--")
-            .expect("the output must carry a comment");
-        let close = output[open..]
-            .find("-->")
-            .expect("the comment must be closed")
-            + open;
-        let body = &output[open + "<!--".len()..close];
+        // The comment must be well formed: its body may not contain the terminator,
+        // or the browser (or CSS parser) ends the comment at that point.
+        let start = output
+            .find(open)
+            .unwrap_or_else(|| panic!("the {name} output must carry a comment, got:\n{output}"));
+        let body_start = start + open.len();
+        let end = output[body_start..]
+            .find(close)
+            .map(|i| i + body_start)
+            .unwrap_or_else(|| panic!("the {name} comment must be closed, got:\n{output}"));
+        let body = &output[body_start..end];
         assert!(
-            !body.contains("--"),
-            "the {name} attribution body must not contain `--`, got:\n{body}"
-        );
-
-        // Everything after the comment is the real document, so the injected markup
-        // must not have escaped into it.
-        let after = &output[close + "-->".len()..];
-        assert!(
-            !after.contains("alert(1)") && !after.contains("<script>"),
-            "the {name} markup after the comment must be untouched, got:\n{after}"
+            !body.contains(close),
+            "the {name} comment body must not contain `{close}`, got:\n{body}"
         );
 
         // The note survives, just defused.
         assert!(
-            body.contains("See - -> <script>alert(1)</script>"),
+            body.contains(defused) && body.contains("alert(1)"),
             "the {name} output must keep the text, only defused, got:\n{body}"
+        );
+
+        // Everything after the comment is the real document, so the injected markup
+        // must not have escaped into it.
+        let after = &output[end + close.len()..];
+        assert!(
+            !after.contains("alert(1)") && !after.contains("<script>"),
+            "the {name} markup after the comment must be untouched, got:\n{after}"
         );
     }
 }

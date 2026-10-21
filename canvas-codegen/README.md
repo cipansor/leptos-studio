@@ -47,10 +47,11 @@ gets the reserved `$comment` keyword, so the document stays valid. `JsonGenerato
 is the one exception: the JSON payload is the caller's own data, so the generator
 ignores the attribution rather than inventing a field in their document.
 
-In an HTML comment the attribution is escaped first: `--` is written as `- -`,
-because a comment ends at the first `--`. Without that, an attribution containing
-`-->` would close the comment early and the rest of the text would become live
-markup. The text stays readable, it just cannot end the comment.
+The text is escaped for the comment syntax it lands in: `--` becomes `- -` in an
+HTML comment and `*/` becomes `* /` in a CSS comment. Both comment styles end at
+their terminator, so an attribution containing `-->` or `*/` would otherwise close
+the comment early and the rest would become live markup or live CSS. The text
+stays readable, it just cannot end the comment.
 
 ## Renamed generators
 

@@ -197,16 +197,19 @@ progress { accent-color: #007bff; }
 /// generator keeps its own syntax while sharing one switch. Empty string when no
 /// attribution was configured, which is the default.
 ///
-/// When the delimiters are an HTML comment, any `--` in the text is broken up
-/// first. An HTML comment ends at the first `--`, so an attribution containing
-/// `-->` would close the comment early and turn the rest of the text into live
-/// markup. Callers pass whatever text they like, so the escaping has to happen
-/// here rather than being left to each generator.
+/// When the delimiters are a comment whose body cannot contain a particular
+/// sequence, that sequence is broken up first. An HTML comment ends at the first
+/// `--` and a CSS comment at the first `*/`, so an attribution containing `-->`
+/// or `*/` would close the comment early and the rest of the text would become
+/// live markup or live CSS. Callers pass whatever text they like, so the escaping
+/// has to happen here rather than being left to each generator.
 pub(crate) fn attribution(config: &GeneratorConfig, prefix: &str, suffix: &str) -> String {
     match &config.attribution {
         Some(text) => {
             let body = if prefix.contains("<!--") {
                 text.replace("--", "- -")
+            } else if prefix.contains("/*") {
+                text.replace("*/", "* /")
             } else {
                 text.clone()
             };
