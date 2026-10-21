@@ -3,6 +3,7 @@
 use crate::config::GeneratorConfig;
 use crate::domain::{AppResult, CanvasComponent, Variable};
 use crate::generator::CodeGenerator;
+use crate::utils::helpers::attribution;
 
 /// TypeScript types generator
 pub struct TypeScriptGenerator;
@@ -10,7 +11,7 @@ pub struct TypeScriptGenerator;
 impl CodeGenerator for TypeScriptGenerator {
     fn generate_with(
         &self,
-        _config: &GeneratorConfig,
+        config: &GeneratorConfig,
         _components: &[CanvasComponent],
         _variables: &[Variable],
     ) -> AppResult<String> {
@@ -241,7 +242,7 @@ export function isCustom(c: CanvasComponent): c is { Custom: CustomComponent } {
 }
 "#;
 
-        Ok(types.to_string())
+        Ok(attribution(config, "// ", "") + types)
     }
 
     fn file_extension(&self) -> &str {

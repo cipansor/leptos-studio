@@ -3,21 +3,48 @@
 use crate::config::GeneratorConfig;
 use crate::domain::{AppResult, CanvasComponent, Variable};
 use crate::generator::CodeGenerator;
-use crate::utils::helpers::component_inline_css;
+use crate::utils::helpers::{attribution, component_inline_css};
 use crate::utils::sanitize::escape_html;
 
 /// HTML code generator
 pub struct HtmlGenerator;
 
+/// The name this generator had before the crate was extracted.
+///
+/// A delegating struct rather than a `type` alias: the old name was a unit
+/// struct, so callers wrote `HtmlCodeGenerator.generate(...)`. A type alias
+/// would exist only in the type namespace and reject that. Prefer
+/// [`HtmlGenerator`] in new code.
+pub struct HtmlCodeGenerator;
+
+impl CodeGenerator for HtmlCodeGenerator {
+    fn generate_with(
+        &self,
+        config: &GeneratorConfig,
+        components: &[CanvasComponent],
+        variables: &[Variable],
+    ) -> AppResult<String> {
+        HtmlGenerator.generate_with(config, components, variables)
+    }
+
+    fn file_extension(&self) -> &str {
+        HtmlGenerator.file_extension()
+    }
+}
+
 impl CodeGenerator for HtmlGenerator {
     fn generate_with(
         &self,
-        _config: &GeneratorConfig,
+        config: &GeneratorConfig,
         components: &[CanvasComponent],
         _variables: &[Variable],
     ) -> AppResult<String> {
-        let mut output = String::from(
-            "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Generated Layout</title>\n</head>\n<body>\n",
+        // The attribution goes after the doctype rather than before it: a comment
+        // ahead of `<!DOCTYPE html>` puts some browsers into quirks mode.
+        let mut output = String::from("<!DOCTYPE html>\n");
+        output.push_str(&attribution(config, "<!-- ", " -->"));
+        output.push_str(
+            "<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Generated Layout</title>\n</head>\n<body>\n",
         );
 
         for component in components {

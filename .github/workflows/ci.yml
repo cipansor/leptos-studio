@@ -55,10 +55,43 @@ jobs:
       - name: Run tests
         run: cargo test --workspace --lib --bins
 
+  # canvas-codegen is excluded from the root workspace so it can carry its own
+  # MSRV, which also excludes it from the `check` and `test` jobs above. It is
+  # still built and tested here, or a change to it would merge with nothing
+  # verifying it.
+  codegen:
+    name: canvas-codegen
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: canvas-codegen
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: canvas-codegen
+
+      - name: Check format
+        run: cargo fmt --all --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Run tests
+        run: cargo test
+
   build:
     name: Build WASM
     runs-on: ubuntu-latest
-    needs: [check, test]
+    needs: [check, test, codegen]
     steps:
       - name: Checkout
         uses: actions/checkout@v7

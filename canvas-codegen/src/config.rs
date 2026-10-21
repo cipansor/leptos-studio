@@ -10,6 +10,15 @@ pub struct GeneratorConfig {
     /// Text to write into the output as an attribution, if any.
     ///
     /// `None` (the default) writes no attribution at all.
+    ///
+    /// Every generator honours this, but the shape depends on the target: a
+    /// comment in the target's syntax for the code and markup formats, an HTML
+    /// comment for Markdown, and the reserved `$comment` keyword for JSON Schema.
+    /// [`JsonGenerator`](crate::generators::JsonGenerator) is the one exception:
+    /// JSON has no comment syntax and the payload is the caller's own data, so
+    /// there is nowhere to put the text without inventing a field in their
+    /// document. It therefore ignores the attribution rather than corrupting the
+    /// output.
     pub attribution: Option<String>,
 }
 

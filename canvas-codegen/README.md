@@ -41,6 +41,26 @@ let css = CssGenerator.generate_with(&config, &components, &[])?;
 # Ok::<(), canvas_codegen::domain::AppError>(())
 ```
 
+Every target honours the config, using a comment in its own syntax. Markdown gets
+an HTML comment, which is valid Markdown and invisible when rendered. JSON Schema
+gets the reserved `$comment` keyword, so the document stays valid. `JsonGenerator`
+is the one exception: the JSON payload is the caller's own data, so the generator
+ignores the attribution rather than inventing a field in their document.
+
+## Renamed generators
+
+The extraction renamed four generators for consistency. The old names remain as
+delegating structs, so existing call sites keep compiling:
+
+| Old name | New name |
+| --- | --- |
+| `LeptosCodeGenerator` | `LeptosGenerator` |
+| `HtmlCodeGenerator` | `HtmlGenerator` |
+| `JsonCodeGenerator` | `JsonGenerator` |
+| `MarkdownCodeGenerator` | `MarkdownGenerator` |
+
+The other seven kept their names.
+
 ## Targets
 
 | Target | Type | Extension |

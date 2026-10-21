@@ -241,12 +241,13 @@ mod tests {
     }
 
     /// The allowlist is only correct if it covers the frontend's `ComponentType`
-    /// enum exactly. Read that enum from its source and compare, so adding a
-    /// frontend variant without a backend tag fails here instead of surfacing as
-    /// a 422 in production.
+    /// enum exactly. That enum now lives in `canvas-codegen`, which the frontend
+    /// re-exports, so the guard reads it from the crate that owns it. Read the
+    /// enum from its source and compare, so adding a variant without a backend
+    /// tag fails here instead of surfacing as a 422 in production.
     #[test]
     fn known_component_types_match_the_frontend() {
-        let path = crate::paths::repo_root().join("frontend/src/domain/component.rs");
+        let path = crate::paths::repo_root().join("canvas-codegen/src/domain/component.rs");
         let source = std::fs::read_to_string(&path).unwrap_or_else(|e| {
             panic!(
                 "cannot read {} to cross-check component types: {e}; this guard must not silently pass",
@@ -256,7 +257,7 @@ mod tests {
 
         let start = source
             .find("pub enum ComponentType {")
-            .expect("ComponentType enum must exist in the frontend domain")
+            .expect("ComponentType enum must exist in the canvas-codegen domain")
             + "pub enum ComponentType {".len();
         let rest = &source[start..];
         let end = rest.find('}').expect("ComponentType enum must be closed");

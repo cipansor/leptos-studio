@@ -3,7 +3,7 @@
 use crate::config::GeneratorConfig;
 use crate::domain::{AppResult, CanvasComponent, Variable, VariableType};
 use crate::generator::CodeGenerator;
-use crate::utils::helpers::{js_string_literal, style_js_properties};
+use crate::utils::helpers::{attribution, js_string_literal, style_js_properties};
 use crate::utils::sanitize::escape_html;
 
 /// React component generator
@@ -12,11 +12,11 @@ pub struct ReactGenerator;
 impl CodeGenerator for ReactGenerator {
     fn generate_with(
         &self,
-        _config: &GeneratorConfig,
+        config: &GeneratorConfig,
         components: &[CanvasComponent],
         variables: &[Variable],
     ) -> AppResult<String> {
-        let mut output = String::new();
+        let mut output = attribution(config, "// ", "");
 
         // Imports
         output.push_str("import React from 'react';\n\n");

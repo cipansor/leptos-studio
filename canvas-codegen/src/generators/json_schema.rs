@@ -10,11 +10,11 @@ pub struct JsonSchemaGenerator;
 impl CodeGenerator for JsonSchemaGenerator {
     fn generate_with(
         &self,
-        _config: &GeneratorConfig,
+        config: &GeneratorConfig,
         components: &[CanvasComponent],
         _variables: &[Variable],
     ) -> AppResult<String> {
-        let schema = serde_json::json!({
+        let mut schema = serde_json::json!({
             "$schema": "http://json-schema.org/draft-07/schema#",
             "title": "Canvas Layout",
             "description": "JSON Schema for a canvas component layout",
@@ -252,6 +252,13 @@ impl CodeGenerator for JsonSchemaGenerator {
             },
             "examples": [serde_json::to_value(components).unwrap_or_default()]
         });
+
+        // JSON has no comments, so an attribution cannot be written as text. JSON
+        // Schema (draft-07) reserves `$comment` for exactly this, and validators
+        // ignore it, so the note survives without invalidating the document.
+        if let Some(text) = &config.attribution {
+            schema["$comment"] = serde_json::Value::String(text.clone());
+        }
 
         serde_json::to_string_pretty(&schema)
             .map_err(|e| AppError::Export(format!("Failed to generate JSON Schema: {}", e)))

@@ -5,12 +5,44 @@ use crate::domain::{AppResult, CanvasComponent, Variable, VariableType};
 use crate::generator::CodeGenerator;
 use crate::preset::ExportPreset;
 use crate::utils::helpers::{
-    EXPORT_CSS, component_inline_css, get_animation_css, rust_string_literal,
+    EXPORT_CSS, attribution, component_inline_css, get_animation_css, rust_string_literal,
 };
 
 /// Leptos code generator
 pub struct LeptosGenerator {
     preset: ExportPreset,
+}
+
+/// The name this generator had before the crate was extracted.
+///
+/// A delegating struct rather than a `type` alias: the old name had an inherent
+/// `new(preset)` constructor and was used as a value, which a type alias cannot
+/// express. Prefer [`LeptosGenerator`] in new code.
+pub struct LeptosCodeGenerator {
+    inner: LeptosGenerator,
+}
+
+impl LeptosCodeGenerator {
+    pub fn new(preset: ExportPreset) -> Self {
+        Self {
+            inner: LeptosGenerator::new(preset),
+        }
+    }
+}
+
+impl CodeGenerator for LeptosCodeGenerator {
+    fn generate_with(
+        &self,
+        config: &GeneratorConfig,
+        components: &[CanvasComponent],
+        variables: &[Variable],
+    ) -> AppResult<String> {
+        self.inner.generate_with(config, components, variables)
+    }
+
+    fn file_extension(&self) -> &str {
+        self.inner.file_extension()
+    }
 }
 
 impl LeptosGenerator {
@@ -728,11 +760,12 @@ impl LeptosGenerator {
 impl CodeGenerator for LeptosGenerator {
     fn generate_with(
         &self,
-        _config: &GeneratorConfig,
+        config: &GeneratorConfig,
         components: &[CanvasComponent],
         variables: &[Variable],
     ) -> AppResult<String> {
-        let mut output = String::new();
+        let mut output = attribution(config, "// ", "");
+
         let mut signals: Vec<(String, String)> = Vec::new();
 
         // Add imports

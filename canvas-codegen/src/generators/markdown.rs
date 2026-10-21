@@ -3,19 +3,46 @@
 use crate::config::GeneratorConfig;
 use crate::domain::{AppResult, CanvasComponent, Variable};
 use crate::generator::CodeGenerator;
+use crate::utils::helpers::attribution;
 use crate::utils::sanitize::escape_html;
 
 /// Markdown code generator (for documentation)
 pub struct MarkdownGenerator;
 
+/// The name this generator had before the crate was extracted.
+///
+/// A delegating struct rather than a `type` alias: the old name was a unit
+/// struct, so callers wrote `MarkdownCodeGenerator.generate(...)`. A type alias
+/// would exist only in the type namespace and reject that. Prefer
+/// [`MarkdownGenerator`] in new code.
+pub struct MarkdownCodeGenerator;
+
+impl CodeGenerator for MarkdownCodeGenerator {
+    fn generate_with(
+        &self,
+        config: &GeneratorConfig,
+        components: &[CanvasComponent],
+        variables: &[Variable],
+    ) -> AppResult<String> {
+        MarkdownGenerator.generate_with(config, components, variables)
+    }
+
+    fn file_extension(&self) -> &str {
+        MarkdownGenerator.file_extension()
+    }
+}
+
 impl CodeGenerator for MarkdownGenerator {
     fn generate_with(
         &self,
-        _config: &GeneratorConfig,
+        config: &GeneratorConfig,
         components: &[CanvasComponent],
         _variables: &[Variable],
     ) -> AppResult<String> {
-        let mut output = String::from("# Generated Layout Documentation\n\n");
+        // Markdown has no comment syntax of its own, so the attribution is an HTML
+        // comment: valid Markdown, invisible in the rendered document.
+        let mut output = attribution(config, "<!-- ", " -->");
+        output.push_str("# Generated Layout Documentation\n\n");
 
         for (i, component) in components.iter().enumerate() {
             output.push_str(&format!("## Component {}\n\n", i + 1));
