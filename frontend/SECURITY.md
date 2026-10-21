@@ -1,112 +1,75 @@
-# Security Policy
+# Security notes (frontend)
 
-## Supported Versions
+The project-wide security policy — supported versions, the reporting channel and
+the response process — lives in the root [SECURITY.md](../SECURITY.md). Report
+vulnerabilities through GitHub private vulnerability reporting only:
 
-We release patches for security vulnerabilities for the following versions:
+* **Report:** https://github.com/cipansor/leptos-studio/security/advisories/new
+* **Advisories:** https://github.com/cipansor/leptos-studio/security/advisories
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+Do not use public issues, pull requests, email or any other channel.
 
-## Reporting a Vulnerability
+This file records the frontend-specific things worth knowing when assessing the
+app.
 
-We take security seriously. If you discover a security vulnerability, please follow these steps:
+## Security considerations
 
-### 🚨 DO NOT
+### Where project data lives
 
-- **Do not** open a public GitHub issue
-- **Do not** discuss the vulnerability in public forums or social media
-- **Do not** exploit the vulnerability
+Saved projects live on the **backend**, not in the browser. Both the manual save
+and the auto-save path call `ProjectManager::save_project`, which POSTs to
+`/api/projects`; the backend writes the result to `projects.json` on the host
+running it (`DATA_FILE` overrides the path). Treat that file as the authoritative
+copy and protect it like any other data store.
 
-### ✅ DO
+**LocalStorage** holds a narrower and more miscellaneous set of things:
 
-1. **Email us privately** at: [INSERT_SECURITY_EMAIL_HERE]
-   - Include detailed information about the vulnerability
-   - Provide steps to reproduce if possible
-   - Include any proof-of-concept code
+* settings (`leptos_studio_settings`) and sidebar widths;
+* project snapshots recorded by the Git panel. When no backend project is
+  selected the Git panel uses a LocalStorage backend, which stores full
+  `Project` snapshots under `leptos_studio_git_repo`;
+* the legacy canvas key (`leptos_studio_canvas`). It is only read, once, to
+  migrate an old browser-only project to the backend, and is then deleted — it is
+  no longer written.
 
-2. **Expect a response** within 48 hours acknowledging receipt
+Anything running on the same origin can read all of this, so do not put sensitive
+information in a project.
 
-3. **Work with us** to understand and fix the issue
+Two things that are *not* persisted, despite storage keys existing for them:
+custom library components are held in memory for the session only, and
+`leptos_studio_project` is a dead constant with no writer. Do not assume either
+survives a reload.
 
-### Response Timeline
+### Deploying the backend
 
-- **Initial Response**: Within 48 hours
-- **Status Update**: Within 7 days
-- **Fix Timeline**: Depends on severity (critical issues prioritized)
+The defaults target local development and should be changed before the backend is
+reachable from an untrusted network:
 
-### What to Include
+* It binds `0.0.0.0:3000`, so it listens on every interface.
+* CORS defaults to `Any` unless `CORS_ORIGIN` is set, which lets any origin call
+  the API.
+* The project endpoints carry no authentication of their own; put the server
+  behind an authenticating reverse proxy, or keep it on a trusted network.
 
-When reporting a vulnerability, please include:
+### Custom components
 
-- Type of vulnerability (XSS, CSRF, etc.)
-- Full paths of source file(s) affected
-- Location of the affected code (tag/branch/commit or direct URL)
-- Step-by-step instructions to reproduce
-- Proof-of-concept or exploit code (if possible)
-- Impact of the issue (what can an attacker do?)
-- Any suggested fixes
+* Custom components use HTML templates.
+* Input is sanitised, but review custom HTML before adding it.
+* Avoid custom components from untrusted sources.
 
-### Disclosure Policy
+### Export functionality
 
-- We will confirm the vulnerability and determine its severity
-- We will release a fix as soon as possible
-- We will credit you for the discovery in the release notes (unless you prefer to remain anonymous)
-- We ask that you do not publicly disclose the issue until we've had a chance to address it
+* Exported code is generated from user input and should be reviewed and
+  validated before production use.
 
-### Safe Harbor
+## Best practices for users
 
-We support safe harbor for security researchers who:
-
-- Make a good faith effort to avoid privacy violations, data destruction, and service interruption
-- Only interact with accounts you own or with explicit permission of the account holder
-- Do not exploit a vulnerability beyond what is necessary to demonstrate it
-- Report vulnerabilities promptly
-
-## Security Best Practices for Users
-
-As a WASM application running entirely in the browser:
-
-1. **Keep Your Browser Updated**: Always use the latest version of your browser
-2. **Be Cautious with Imports**: Only import project JSON files from trusted sources
-3. **Review Custom Components**: Carefully review any custom HTML components before adding them
-4. **HTTPS Only**: Only access Leptos Studio via HTTPS in production
-5. **Clear Storage**: Regularly clear browser storage if you work with sensitive data
-
-## Known Security Considerations
-
-### Client-Side Storage
-
-- Project data is stored in browser LocalStorage
-- This data is accessible to any script running on the same origin
-- Do not store sensitive information in projects
-
-### Custom Components
-
-- Custom components use HTML templates
-- While we sanitize input, always review custom HTML before adding
-- Avoid using custom components from untrusted sources
-
-### Export Functionality
-
-- Exported code should be reviewed before use in production
-- Generated code is based on user input and should be validated
-
-## Security Updates
-
-Security updates will be:
-
-- Released as soon as possible after verification
-- Announced in GitHub releases with `[SECURITY]` tag
-- Documented in CHANGELOG.md
-- Communicated to users via GitHub security advisories
-
-## Questions?
-
-If you have security-related questions that aren't about a vulnerability, please:
-
-- Open a GitHub Discussion
-- Include `[SECURITY]` in the title
-- We'll respond publicly (unless the topic requires confidentiality)
-
-Thank you for helping keep Leptos Studio and its users safe! 🔒
+1. Keep your browser updated.
+2. Only import project JSON from trusted sources.
+3. Review custom components before adding them.
+4. Serve the app over HTTPS in production, and do not expose the backend's
+   default `0.0.0.0` / permissive-CORS configuration to an untrusted network.
+5. Deleting a project is a backend operation — clearing browser storage does not
+   remove the copy in `projects.json`.
+6. Custom library components are session-only; re-add them after a reload rather
+   than relying on them being restored.

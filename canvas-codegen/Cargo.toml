@@ -5,6 +5,7 @@ edition = "2024"
 rust-version = "1.89.0"
 description = "Turn a canvas component tree into source code for Leptos, React, Vue, Svelte, HTML, CSS and more"
 license = "Apache-2.0"
+authors = ["Yayasan Pesantren Cipansor and the canvas-codegen contributors"]
 repository = "https://github.com/cipansor/leptos-studio"
 keywords = ["codegen", "leptos", "react", "vue", "svelte"]
 categories = ["development-tools", "web-programming"]

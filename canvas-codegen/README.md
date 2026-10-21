@@ -90,3 +90,6 @@ Rust 1.89.0.
 ## License
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
+
+Copyright 2026 Yayasan Pesantren Cipansor and the canvas-codegen contributors.
+See [NOTICE](NOTICE) for the full attribution.

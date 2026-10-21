@@ -68,7 +68,7 @@ For a task-oriented walkthrough, see [QUICKSTART.md](QUICKSTART.md).
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/analisaperlengkapan/leptos-studio.git
+    git clone https://github.com/cipansor/leptos-studio.git
     cd leptos-studio
     ```
 

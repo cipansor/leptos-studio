@@ -144,6 +144,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Added a root `NOTICE` and `SECURITY.md`, and recorded the copyright as
+  **Yayasan Pesantren Cipansor and the leptos-studio contributors** across the
+  README, `canvas-codegen` README/NOTICE, `frontend/Cargo.toml` and
+  `frontend/CONTRIBUTING.md`. Vulnerability reports now go through GitHub private
+  vulnerability reporting only.
+- Fixed the remaining stale `analisaperlengkapan/leptos-studio` URLs left over
+  from the repository transfer: the clone and upstream-remote commands in
+  `frontend/CONTRIBUTING.md`, `frontend/README.md` and `frontend/QUICKSTART.md`,
+  the `repository` field in `frontend/Cargo.toml`, and `docs_url` in
+  `canvas-codegen/src/domain/error.rs` (which shipped in the published crate).
+  Account mentions in `CODEOWNERS` and `dependabot.yml` are unaffected — those
+  name a user, not a URL.
+- `frontend/SECURITY.md` now describes where project data actually lives instead
+  of claiming it is kept in LocalStorage. Saved projects go to the backend
+  (`POST /api/projects` → `projects.json`); LocalStorage holds settings, sidebar
+  widths, Git-panel snapshots (`leptos_studio_git_repo`) and the legacy canvas key
+  that is read once for migration and then deleted. Custom library components and
+  the unused `leptos_studio_project` key persist nothing. Added the development
+  defaults worth reviewing before deployment (`0.0.0.0:3000`, `CORS_ORIGIN`
+  defaulting to `Any`, unauthenticated project endpoints).
 - Corrected the click-to-place claim (`frontend/QUICKSTART.md`) to the actual keyboard activation,
   and stated explicitly that **Save to Library** entries are session-only — a saved project carries
   the canvas layout but not the library — across `README.md`, `frontend/README.md`,
