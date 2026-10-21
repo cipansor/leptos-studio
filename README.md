@@ -340,3 +340,8 @@ See [CONTRIBUTING.md](frontend/CONTRIBUTING.md) for conventions and the [CHANGEL
 ## 📄 License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+Copyright 2026 Yayasan Pesantren Cipansor and the leptos-studio contributors.
+See [NOTICE](NOTICE) for the full attribution.
+
+For reporting vulnerabilities, see [SECURITY.md](SECURITY.md).

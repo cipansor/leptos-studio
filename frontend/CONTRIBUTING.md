@@ -208,9 +208,16 @@ harness and some dependencies (such as `mio`) do not build for that target.
 - Add entries to CHANGELOG.md
 - Create/update guides in `/docs` if needed
 
+## Security
+
+Do not report security issues in a public issue or pull request. See
+[SECURITY.md](../SECURITY.md) for the private reporting channel.
+
 ## License
 
-By contributing, you agree that your contributions will be licensed under the Apache 2.0 License.
+By contributing, you agree that your contributions will be licensed under the
+Apache License, Version 2.0, and that the copyright is held by Yayasan Pesantren
+Cipansor and the leptos-studio contributors.
 
 ## Questions?
 

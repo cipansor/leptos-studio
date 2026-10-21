@@ -144,6 +144,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Added a root `NOTICE` and `SECURITY.md`, and recorded the copyright as
+  **Yayasan Pesantren Cipansor and the leptos-studio contributors** across the
+  README, `canvas-codegen` README/NOTICE, `frontend/Cargo.toml` and
+  `frontend/CONTRIBUTING.md`. Vulnerability reports now go through GitHub private
+  vulnerability reporting only. Fixed the stale `repository` URL in
+  `frontend/Cargo.toml`.
 - Corrected the click-to-place claim (`frontend/QUICKSTART.md`) to the actual keyboard activation,
   and stated explicitly that **Save to Library** entries are session-only — a saved project carries
   the canvas layout but not the library — across `README.md`, `frontend/README.md`,
