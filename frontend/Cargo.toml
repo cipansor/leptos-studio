@@ -25,7 +25,7 @@ js-sys = "0.3.98"
 wasm-bindgen = { version = "0.2.121", features = ["serde-serialize"] }
 gloo-timers = { version = "0.4", features = ["futures"] }
 wasm-bindgen-futures = "0.4.71"
-gloo-net = "0.7"
+gloo-net = "0.8"
 thiserror = "2.0"
 uuid = { version = "1.23", features = ["v4", "serde", "js"] }
 regex = "1.12"
